@@ -1,5 +1,6 @@
 .venv
+.vscode
+.ansible
 __pycache__
 iway-certbot-dns-auth.y*ml
 config.y*ml
-

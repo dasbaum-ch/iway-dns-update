@@ -1,6 +1,7 @@
 """
 Handles API login and logout stuff
 """
+
 import yaml
 import requests
 
@@ -22,7 +23,7 @@ def get_iway_token(config_path="iway-certbot-dns-auth.yml"):
         headers = {
             "Content-Type": "application/json",
         }
-        response = session.post(url,headers=headers, json=payload, timeout=3)
+        response = session.post(url, headers=headers, json=payload, timeout=3)
         response.raise_for_status()
         data = response.json()
         auth_token = data.get("token")
@@ -36,6 +37,7 @@ def get_iway_token(config_path="iway-certbot-dns-auth.yml"):
         print(f"Authentication failed: {e}")
 
     return None, None
+
 
 def logout_iway_token(auth_token, csrf_token):
     """
@@ -55,24 +57,26 @@ def logout_iway_token(auth_token, csrf_token):
         return data.get("detail")
     except (requests.exceptions.RequestException, KeyError) as e:
         print(f"Authentication failed: {e}")
-    except() as e:
+    except () as e:
         print(e)
 
     return None
 
 
-def update_dns_record(domain, record_name, record_type, new_content, auth_token, csrf_token):
+def update_dns_record(
+    domain, record_name, record_type, new_content, auth_token, csrf_token
+):
     """
     Updates a specific RRSet in the iWay DNS forward zone.
     """
     url = f"https://backend.login.iway.ch/api/services/dns/forward/{domain}"
-    
+
     headers = {
         "Content-Type": "application/json",
         "Authorization": auth_token,  # Use f"Bearer {auth_token}" if the API requires it
-        "X-CSRFToken": csrf_token
+        "X-CSRFToken": csrf_token,
     }
-    
+
     cookies = {"csrftoken": csrf_token}
 
     # The payload structure for updating an RRSet
@@ -83,22 +87,19 @@ def update_dns_record(domain, record_name, record_type, new_content, auth_token,
                 "type": record_type,
                 "ttl": 600,
                 "changetype": "REPLACE",
-                "records": [
-                    {
-                        "content": new_content,
-                        "disabled": False
-                    }
-                ]
+                "records": [{"content": new_content, "disabled": False}],
             }
         ]
     }
     try:
         # We use PATCH to update specific items in the rrsets list
-        response = requests.patch(url, json=payload, headers=headers, cookies=cookies, timeout=30)
+        response = requests.patch(
+            url, json=payload, headers=headers, cookies=cookies, timeout=30
+        )
         response.raise_for_status()
         return True
     except requests.exceptions.RequestException as e:
         print(f"Failed to update DNS: {e}")
-        if hasattr(e, 'response') and e.response is not None:
+        if hasattr(e, "response") and e.response is not None:
             print(f"Response: {e.response.text}")
         return False

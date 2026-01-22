@@ -1,0 +1,15 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "enabledManagers": [
+    "woodpecker",
+    "pep621",
+    "pre-commit"
+  ],
+  "prHourlyLimit": 0,
+  "pre-commit": {
+    "enabled": true
+  }
+}
