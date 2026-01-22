@@ -1,0 +1,12 @@
+[project]
+name = "iway-dns-update"
+version = "1.0.0"
+description = "Update my DANE TLSA record"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "argparse>=1.4.0",
+    "pyyaml>=6.0.3",
+    "requests>=2.32.5",
+]
+
